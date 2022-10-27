@@ -1,3 +1,4 @@
+// A utility package to make rpi-ws821x-go simpler and more intuitive
 package neopixel
 
 import (
@@ -13,6 +14,17 @@ type Strip struct {
 }
 
 func NewStrip(pin, length int) (*Strip, error) {
+    pins := [4]int{10, 12, 18, 21}
+    var valid bool
+    for _, v := range pins {
+        if pin == v {
+            valid = true
+        }
+    }
+    if !valid {
+        return nil, errors.New("invalid pin. valid pins are 10, 12, 18, and 21")
+    }
+
     opt := ws2811.DefaultOptions
     opt.Channels[0].LedCount = length
     opt.Channels[0].GpioPin = pin
@@ -33,6 +45,7 @@ func (s *Strip) Set(index int, rgb color.Color) error {
     if index >= s.Length {
         return errors.New("index out of bounds")
     }
+
     s.Strip.Leds(0)[index] = colorToBytes(rgb)
     return nil
 }
@@ -73,7 +86,7 @@ func (m *Matrix) Set(x, y int, rgb color.Color) error {
     if y%2 == 0 {
         index = y*m.Width + x
     } else {
-        index = (y+1)*m.Width - x
+        index = (y+1)*m.Width - (x+1)
     }
     m.strip.Set(index, rgb)
     return nil
