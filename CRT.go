@@ -16,6 +16,9 @@ var (
     stop bool
     running  bool
     matrix   *neopixel.Matrix
+
+    BLACK = color.RGBA{0, 0, 0, 0}
+    WHITE = color.RGBA{255, 255, 255, 255}
 )
 
 const (
@@ -45,11 +48,11 @@ func change(event lirc.Event) {
         case "KEY_5":
             go Anim("heart.json")
         case "KEY_6":
-            
+            matrix.Clear(WHITE)
         case "KEY_0":
             
         case "KEY_POWER":
-            matrix.Clear()
+            matrix.Clear(BLACK)
             matrix.Render()
         }
     }
@@ -59,7 +62,7 @@ func Anim(path string) {
     build, err := unpack.UnpackFile(path)
     if err != nil {
         log.Println(err)
-        matrix.Clear()
+        matrix.Clear(BLACK)
         matrix.Render()
         return
     }

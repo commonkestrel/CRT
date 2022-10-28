@@ -50,9 +50,9 @@ func (s *Strip) Set(index int, rgb color.Color) error {
     return nil
 }
 
-func (s *Strip) Clear() {
+func (s *Strip) Clear(rgb color.RGBA) {
     for i := 0; i < s.Length; i++ {
-        s.Set(i, color.RGBA{0, 0, 0, 0})
+        s.Set(i, rgb)
     }
 }
 
@@ -92,8 +92,8 @@ func (m *Matrix) Set(x, y int, rgb color.Color) error {
     return nil
 }
 
-func (m *Matrix) Clear() {
-    m.strip.Clear()
+func (m *Matrix) Clear(rgb color.RGBA) {
+    m.strip.Clear(rgb)
 }
 
 func (m *Matrix) Render() error {
