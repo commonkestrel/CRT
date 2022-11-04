@@ -1,3 +1,4 @@
+
 package main
 
 import (
@@ -80,10 +81,9 @@ func run() {
         default:
         }
 
-        fps := time.NewTicker(time.Second/time.Duration(anim.Fps))
-
         marcher:
         for fn < len(anim.Frames) {
+            fps := time.NewTimer(time.Second/time.Duration(anim.Fps))
             select {
             case <-change:
                 continue out
@@ -93,13 +93,13 @@ func run() {
             frame := anim.Frames[fn]
 
             if len(frame) == 0 {
+                fps.Stop()
                 timer := time.NewTimer(anim.LoopDelay)
 
                 select {
                 case <-timer.C:
                     fn++
                     timer.Stop()
-                    fps.Reset(time.Second/time.Duration(anim.Fps))
                     continue marcher
                 case <-change:
                     timer.Stop()
@@ -113,8 +113,10 @@ func run() {
 
             select {
             case <-fps.C:
+                fps.Stop()
                 continue marcher
             case <-change:
+                fps.Stop()
                 continue out
             }
         }
